@@ -232,7 +232,6 @@
   .btn-confirm.active:hover { background: #2d5ab8; }
 
   /* ===== MAIN BUTTONS ===== */
-  .btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
   button {
     border: none; border-radius: 10px; padding: 11px 24px;
     font-family: 'Nunito', sans-serif; font-size: .93rem; font-weight: 700;
@@ -241,8 +240,6 @@
     -webkit-tap-highlight-color: transparent;
   }
   button:hover { filter: brightness(1.06); transform: translateY(-1px); }
-  #btn-reset { background: #e8ecf7; color: var(--text); }
-  #btn-hint  { background: #dce8ff; color: #1e3a8a; }
 
   /* ===== SUCCESS ===== */
   #success-banner {
@@ -275,11 +272,6 @@
 
 <div class="trainer">
   <div class="figure-row" id="figure-row"></div>
-
-  <div class="btn-row">
-    <button id="btn-reset">↺ Сбросить</button>
-    <button id="btn-hint">💡 Подсказка</button>
-  </div>
 
   <div id="success-banner">🎉 Все формулы расставлены правильно! Отлично!</div>
 </div>
@@ -607,34 +599,6 @@ function checkWin() {
     document.getElementById('success-banner').style.display = 'block';
 }
 
-document.getElementById('btn-reset').addEventListener('click', () => {
-  document.getElementById('success-banner').style.display = 'none';
-  buildUI();
-});
-
-document.getElementById('btn-hint').addEventListener('click', () => {
-  const unfilled = CORRECT_CHIPS.filter(c => {
-    const zone = document.getElementById(`zone-${c.figureId}-${c.type}`);
-    return zone && !zone.classList.contains('correct');
-  });
-  if(!unfilled.length) return;
-  const pick = unfilled[Math.floor(Math.random()*unfilled.length)];
-  const zone = document.getElementById(`zone-${pick.figureId}-${pick.type}`);
-  if(!zone) return;
-  zone.classList.add('correct');
-  const fig = FIGURES.find(f => f.id === pick.figureId);
-  zone.innerHTML = `<span class="zone-label">${fig.formulas[pick.type].label}</span><span>\\(${pick.latex}\\)</span>`;
-  const chipEl = document.getElementById(`pchip-${pick.id}`);
-  if(chipEl) chipEl.classList.add('used');
-  correctCount++;
-  updateScore();
-  if(window.MathJax) MathJax.typesetPromise([zone]);
-  const cardZones = document.querySelectorAll(`[data-figure="${pick.figureId}"]`);
-  if([...cardZones].every(z => z.classList.contains('correct'))) {
-    document.getElementById(`card-${pick.figureId}`).classList.add('matched');
-  }
-  checkWin();
-});
 
 /* ===== INIT ===== */
 buildUI();
